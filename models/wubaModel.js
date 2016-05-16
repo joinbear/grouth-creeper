@@ -19,7 +19,7 @@ creeper.prototype.getWuBaAreaUrls = function(website,callback){
 		$        = cheerio.load(website),
 		areaUrls = [],
 		that     = this,//处理this的指向问题
-		reg   = /wuhou|chenghua|jinniu|qingyangqu|longquanyi|cdgaoxin|shuangliu|jinjiang/;
+		reg   = /wuhou|chenghua|jinniu|qingyangqu|longquanyi|cdgaoxin|shuangliu|jinjiang|wenjiang/;
 		// reg      = /jinniu|cdgaoxin/;
 		// reg   = /wuhou/;
 
@@ -143,7 +143,10 @@ creeper.prototype.wuBaObject = {
 				async.waterfall([function (callback){
 					// website 抓取到的网页内容
 					creeper.getPageByUrl(areaUrl,function (err, website){
-						callback(null,website);
+						var delay = parseInt((Math.random() * 10000000) % 2000, 10);
+						setTimeout(function () {
+					    callback(null,website);
+					  }, delay);
 					});
 				},function (website,callback){
 					//storeUrls 返回的小区url数组
@@ -174,7 +177,10 @@ creeper.prototype.wuBaObject = {
   	 	async.waterfall([function (callback){
 				// website 抓取到的网页内容
 				creeper.getPageByUrl(storeUrl,function (err, website){
-					callback(null,storeUrl,website);
+					var delay = parseInt((Math.random() * 10000000) % 2000, 10);
+					setTimeout(function () {
+				    callback(null,storeUrl,website);
+				  }, delay);
 				});
 			},function (storeUrl,website,callback){
 				//storeUrls 返回的小区url数组

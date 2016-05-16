@@ -9,7 +9,7 @@ var
 	creeper    = require('./creeperModel'),
 	fs         = require('fs-extra');
 /**
- * [getAnjukeAreaUrls   解析页面获取58同城的二手房大区url地址]
+ * [getAnjukeAreaUrls   解析页面获取anjuke同城的二手房大区url地址]
  * @param  {[type]}   website  [待解析的网页]
  * @param  {Function} callback [回调函数，返回解析得到的大区url集合]
  * @return {[type]}            [description]
@@ -19,17 +19,17 @@ creeper.prototype.getAnjukeAreaUrls = function(website,callback){
 		$        = cheerio.load(website),
 		areaUrls = [],
 		that     = this,//处理this的指向问题
-		// reg   = /jinjiang|wuhou|chenghua|jinniu|qingyang|gaoxin/;
-		reg   = /wuhou/;
-		//reg      = /jinniu|gaoxin/;
-		//reg   = /shuangliu/;
+		reg   = /jinjiang|wuhou|chenghua|jinniu|qingyang|gaoxin/;
+		// reg   = /wuhou|chenghua|jinniu|qingyang/;
+		// reg      = /jinniu/;
+		// reg   = /shuangliu/;
 
 	// 获取首页区域的链接
   $('#content .elems-l a').each(function (idx, element) {
 		var 
 		$element = $(element),
 		areaUrl  = $element.attr('href'),
-		areaName = areaUrl.replace(that.creeperUrl + 'sale/','').replace('/',''),
+		areaName = areaUrl.replace(that.creeperUrl + '/sale/','').replace('/',''),
 		areaTxt  = entities.decode($element.html());
 		
 		//获取指定大区的url地址和名称
@@ -42,19 +42,22 @@ creeper.prototype.getAnjukeAreaUrls = function(website,callback){
 	callback(null,areaUrls);
 };
 /**
- * [getAnjukeStoreUrls 解析页面获取获取58同城的门店的url集合]
+ * [getAnjukeStoreUrls 解析页面获取获取anjuke同城的门店的url集合]
  * @param  {[type]}   website  [待解析页面]
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
 creeper.prototype.getAnjukeStoreUrls = function(website,callback){
-	var $ = cheerio.load(website),storeUrls = [],that = this;
+	var 
+		$         = cheerio.load(website),
+		storeUrls = [],
+		that      = this;
   $('#content .elems-l .sub-items a').each(function (idx, element) {
     var 
 			$element  = $(element),
 			storeUrl  = $element.attr('href'),
 			storeTxt  = entities.decode($element.html()),
-			storeName = storeUrl.replace(that.creeperUrl + 'sale/','').replace('/','');
+			storeName = storeUrl.replace(that.creeperUrl + '/sale/','').replace('/','');
 
       storeUrls.push(storeUrl);
       that.storeObject[storeName] = storeTxt;
@@ -62,93 +65,45 @@ creeper.prototype.getAnjukeStoreUrls = function(website,callback){
   callback(null, storeUrls);
 };
 /**
- * [getHouseUrlsByStoreUrl description]
+ * [getAnjukeHouseInfo description]
  * @param  {[type]}   storeUrl [description]
  * @param  {[type]}   website  [description]
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-creeper.prototype.getHouseUrlsByStoreUrl = function(storeUrl,website,callback){
-	var $ = cheerio.load(website),detailUrls = [],that = this;
-  $('#house-list .house-title a').each(function (idx, element) {
-    var 
-			$element  = $(element),
-			storeUrl  = $element.attr('href');
-			// if(idx < 25){
-				detailUrls.push(storeUrl);
-			// }
-  });
-  callback(null, detailUrls);
-};
-/**
- * [getAnjukeHouseInfo description]
- * @param  {[type]}   detailUrl [description]
- * @param  {[type]}   website  [description]
- * @param  {Function} callback [description]
- * @return {[type]}            [description]
- */
-creeper.prototype.getAnjukeHouseInfo = function(detailUrl,website,callback){
+creeper.prototype.getAnjukeHouseInfo = function(storeUrl,website,callback){
 	var 
 		$          = cheerio.load(website),
-		resultObj  = {},
-		companyStr,
-		replaceStr = this.creeperUrl + 'sale/',
-		areaDom    = $('#content .p_crumbs').find('a'),
-		areaName   = areaDom.eq(areaDom.length - 2).attr('href'),
-		storeName  = areaDom.eq(areaDom.length - 1).attr('href');
+		storeName  = storeUrl.replace(this.creeperUrl,'').replace('/sale/','').replace('/',''),
+		areaArray  = [],
+		areaResult = [],
+		houseNum   = $('#house-list').find('li').length;
+		areaDom    = $('#content .p_crumbs a'),
+		areaName   = areaDom.eq(areaDom.length - 2).attr('href');
 		if(areaName){
-			areaName = areaName.replace(replaceStr,'').replace('/','');
+			areaName   = areaName.replace(this.creeperUrl + '/sale/','').replace('/','');
 		}
-		if(storeName){
-			storeName = storeName.replace(replaceStr,'').replace('/','');
-		}
+  areaArray.push(this.areaObject[areaName]);
+  areaArray.push(this.storeObject[storeName]);
+	areaArray.push(houseNum);
   //输出抓取网页内容
   //this.writePage(storeName,website);
-  companyStr = $('#content').find('.comp_info').children().first().html();
-  if(companyStr){
-    resultObj.company = entities.decode(companyStr);
-  }
-  resultObj.areaName = areaName;
-  resultObj.storeName = storeName;
-  callback(null,resultObj);
+
+  $('#house-list').find('li').each(function (idx, element) {
+    var 
+			$element  = $(element),
+			resultObj = {},
+			company   = $element.find('.house-title a').attr('data-company');
+    if(company){
+      resultObj.company = entities.decode(company);
+    }
+    areaResult.push(resultObj);
+  });
+  areaArray = this.countHouseInfo(areaArray,areaResult);
+  console.log(areaArray);
+  callback(null,areaArray);
 };
 creeper.prototype.AnjukeObject = {
-	buildData:function (data,keyName){
-		/**
-		 * [isExistElement 判断一个元素是否在数组中]
-		 * @param  {[type]}  _array   []
-		 * @param  {[type]}  _element [description]
-		 * @return {Boolean}          [description]
-		 */
-		var isExistElement = function (_array, _element){
-			if(!_array || !_element) return false;  
-	        if(!_array.length){  
-	            return (_array == _element);  
-	        }  
-	        for(var i=0; i<_array.length; i++){  
-	            if(_element == _array[i]) return true;  
-	        }  
-	        return false; 
-		};
-		var len = data.length,dataArr = [],newData = {}; 
-	  for(var i = 0; i < len ; i++){
-	  	if(!isExistElement(dataArr,data[i][keyName])){
-	  		dataArr.push(data[i][keyName]);
-	  	}
-	  }
-	  for(var j = 0 ; j < dataArr.length ; j++){
-	  	var 
-	  		name = dataArr[j],
-	  		tempArr= []; 
-	  	for(var k = 0 ; k < len ; k++){
-	  		if(name == data[k][keyName]){
-	  			tempArr.push(data[k]);
-	  		}
-	  	}
-	  	newData[name] = tempArr;
-	  }
-	  return newData;
-	},
 	/**
 	 * [getAreaByUrl 根据URL地址获取各个大区url地址集合]
 	 * @param  {[object]}   creeper    [爬虫对象]
@@ -184,7 +139,10 @@ creeper.prototype.AnjukeObject = {
 				async.waterfall([function (callback){
 					// website 抓取到的网页内容
 					creeper.getPageByUrl(areaUrl,function (err, website){
-						callback(null,website);
+						var delay = parseInt((Math.random() * 10000000) % 2000, 10);
+						setTimeout(function () {
+					    callback(null,website);
+					  }, delay);
 					});
 				},function (website,callback){
 					//storeUrls 返回的小区url数组
@@ -203,95 +161,33 @@ creeper.prototype.AnjukeObject = {
 		  });
 	},
 	/**
-	 * [getHouseDetailByStoreUrl 根据小区url地址获取房源统计信息]
+	 * [getHouseInfoByStoreUrl 根据小区url地址获取房源统计信息]
 	 * @param  {[object]}   creeper   [爬虫对象]
 	 * @param  {[array]}    storeUrls [抓取页面的url集合]
 	 * @param  {Function}   callback  [回调函数，返回抓取到的房源信息集合]
 	 * @return {[type]}             [description]
 	 */
-	getHouseUrlsByStoreUrl : function(creeper,storeUrls,callback){
+	getHouseInfoByStoreUrl : function(creeper,storeUrls,callback){
 		//控制并发数量为5
 		async.mapLimit(storeUrls, 5, function (storeUrl, callback) {
   	 	async.waterfall([function (callback){
 				// website 抓取到的网页内容
 				creeper.getPageByUrl(storeUrl,function (err, website){
-					callback(null,storeUrl,website);
+					var delay = parseInt((Math.random() * 10000000) % 2000, 10);
+					setTimeout(function () {
+				    callback(null,storeUrl,website);
+				  }, delay);
 				});
 			},function (storeUrl,website,callback){
 				//storeUrls 返回的小区url数组
-				creeper.getHouseUrlsByStoreUrl(storeUrl,website,function (err, areaArray){
-					console.log(areaArray);
+				creeper.getAnjukeHouseInfo(storeUrl,website,function (err, areaArray){
 					callback(null,areaArray);
 				});
 			}],function (err,areaArray){
 				callback(null,areaArray);
 			});
   	},function (err,result){
-  		var arr = [];
-	  	for(var i in result){
-	  		arr.push.apply(arr,result[i]);
-	  	}
-	  	callback(null, arr);
-  	});
-	},
-	/**
-	 * [getHouseInfoByStoreUrl 根据小区url地址获取房源统计信息]
-	 * @param  {[object]}   creeper   [爬虫对象]
-	 * @param  {[array]}    detailUrls [抓取页面的url集合]
-	 * @param  {Function}   callback  [回调函数，返回抓取到的房源信息集合]
-	 * @return {[type]}             [description]
-	 */
-	getHouseInfoByStoreUrl : function(creeper,detailUrls,callback){
-		//控制并发数量为5
-		async.mapLimit(detailUrls, 5, function (detailUrl, callback) {
-			async.waterfall([function (callback){
-				// website 抓取到的网页内容
-				creeper.getPageByUrl(detailUrl,function (err, website){
-					callback(null,detailUrl,website);
-				});
-			},function (detailUrl,website,callback){
-				//detailUrls 返回的小区url数组
-				creeper.getAnjukeHouseInfo(detailUrl,website,function (err, houseArray){
-					callback(null,houseArray);
-				});
-			}],function (err,houseArray){
-				console.log(houseArray);
-				callback(null,houseArray);
-			});
-		},function (err,result){
-			console.log("=======开始处理数据=======");
-			var 
-				resultArr = [],
-				test      = creeper.AnjukeObject.buildData(result,'areaName'),
-				build     = [];
-			for(var i in test){
-				build.push(creeper.AnjukeObject.buildData(test[i],'storeName'));
-			}
-			for(var k in build){
-				for(var j in build[k]){
-					var arr = [],areaName,lianjia = awjw = 0;
-					for(var d in build[k][j]){
-						var obj = build[k][j],areaName = obj[d].areaName;
-						if(obj[d].company == '成都链家'){
-							lianjia+=1
-						}
-						if(obj[d].company == '爱屋吉屋'){
-							awjw+=1
-						}
-					}
-					arr.push(creeper.areaObject[areaName]);
-					arr.push(creeper.storeObject[j]);
-					arr.push(build[k][j].length);
-					arr.push(lianjia);
-					arr.push(awjw);
-					arr.push(0);
-					arr.push(0);
-					arr.push(0);
-					resultArr.push(arr);
-				}
-			}
-		console.log("=======处理数据结束等待导出=======");
-  		callback(null, resultArr);
+  	 	callback(null, result);
   	});
 	}
 };

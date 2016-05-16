@@ -60,23 +60,17 @@ function creeperController(){
 				creeper.AnjukeObject.getStoreByAreaUrl(creeper,areaUrls,callback);
 
 			},function (storeUrls,callback){
+
 				//获取各个小区房源统计信息
-			  creeper.AnjukeObject.getHouseUrlsByStoreUrl(creeper,storeUrls,callback);
-
-			},function (detailUrls,callback){
-
-				//获取房源详情统计信息
-			  creeper.AnjukeObject.getHouseInfoByStoreUrl(creeper,detailUrls,callback);
+			  creeper.AnjukeObject.getHouseInfoByStoreUrl(creeper,storeUrls,callback);
 
 			},function (areaResult,callback) {
-			 console.log(areaResult);
 				//处理返回结果
 	      dataArray.push.apply(dataArray,areaResult);
-		 
 	      callback(null, dataArray);
 
 		  }],function(err,finalResult){
-
+		  	console.log(finalResult);
 		  	//输出excel
 		    creeper.outPutData('anjuke',finalResult);
 

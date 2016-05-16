@@ -68,14 +68,14 @@ creeper.prototype.countHouseInfo = function(areaArray,areaResult){
 	  for(; i < len ; i++){
 	    if(areaResult[i].jinpin){
 	      jinSum += 1;
-	      if(areaResult[i].company == "链家地产"){
+	      if(areaResult[i].company == "链家地产" || areaResult[i].company == "成都链家"){
 	        lianJin += 1;
 	      }
 	      if(areaResult[i].company == "爱屋吉屋"){
 	        awjwJin += 1;
 	      }
 	    }
-	    if(areaResult[i].company == "链家地产"){
+	    if(areaResult[i].company == "链家地产" || areaResult[i].company == "成都链家"){
 	      lianSum += 1;
 	    }
 	    if(areaResult[i].company == "爱屋吉屋"){
