@@ -12,5 +12,5 @@ var j = schedule.scheduleJob(rule, function(){
   creeper.getAnjukeData('http://chengdu.anjuke.com/');
   console.log("执行任务");
 });
-// creeper.getWuBaData('http://cd.58.com');
+creeper.getWuBaData('http://cd.58.com');
 creeper.getAnjukeData('http://chengdu.anjuke.com/');
