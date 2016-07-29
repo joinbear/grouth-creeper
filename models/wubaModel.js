@@ -1,13 +1,11 @@
-var 
-	superagent = require('superagent'),
+var
 	cheerio    = require('cheerio'),
 	urlUtil    = require('url'),
 	Entities   = require('html-entities').XmlEntities,
 	entities   = new Entities(),
 	xlsx       = require('node-xlsx'),
 	async      = require('async'),
-	creeper    = require('./creeperModel'),
-	fs         = require('fs-extra');
+	creeper    = require('./creeperModel');
 /**
  * [getWuBaAreaUrls   解析页面获取58同城的二手房大区url地址]
  * @param  {[type]}   website  [待解析的网页]
@@ -19,7 +17,7 @@ creeper.prototype.getWuBaAreaUrls = function(website,callback){
 		$        = cheerio.load(website),
 		areaUrls = [],
 		that     = this,//处理this的指向问题
-		reg   = /wuhou|chenghua|jinniu|qingyangqu|longquanyi|cdgaoxin|shuangliu|jinjiang|wenjiang/;
+		reg   = /wuhou|chenghua|jinniu|qingyangqu|longquanyi|cdgaoxin|shuangliu|jinjiang|wenjiang|xindu|shuangliu|pixian/;
 		// reg      = /jinniu|cdgaoxin/;
 		// reg   = /wuhou/;
 

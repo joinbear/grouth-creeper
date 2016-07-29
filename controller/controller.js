@@ -10,7 +10,7 @@ function creeperController(){
 			areaObject  = {},
 			storeObject = {},
 			time = new Date().getTime(),
-			cookies = 'userid360_xml=4C635D2108502C167D1BE86576A66749; time_create='+time+'; f=n; id58=c5/njVZ3qACj4izhA+npAg==; als=0; ipcity=cd%7C%u6210%u90FD%7C0; bj58_id58s="RXVfaWo4a0g4QmU1MTE1NQ=="; sessionid=7fdd6ab6-0659-4fd5-a8f9-28503ee6a4a1; jjqp=1; myfeet_tooltip=end; bdshare_firstime=1450682830884; tj_ershoubiz=true; f=n; 58home=cd; bj58_new_session=0; bj58_init_refer="http://cd.58.com/"; bj58_new_uv=2; city=cd; 58tj_uuid=a7903e85-65cb-43fa-ab3f-dfc1d92fab5a; new_session=0; init_refer=; new_uv=2',
+			cookies = 'userid360_xml=ADC38C996E0E4967BC23904937BA9232; time_create='+time+'; f=n; bj58_id58s="dEEzVTlqU0UyM3VzODMzMQ=="; sessionid=81b1e80d-2e53-4bf3-b2c6-71cd8a16831b; id58=c5/njVdAKRofqcupF+eyAg==; ipcity=cd%7C%u6210%u90FD; myfeet_tooltip=end; als=0; bj58_new_session=0; bj58_init_refer=""; bj58_new_uv=1; city=cd; 58tj_uuid=e9063919-5ccf-48d8-9e97-31c2974f987d; new_session=0; new_uv=1; utm_source=market; spm=b-31580022738699-me-f-824.bdpz_biaoti; init_refer=',
 			creeperUrl  = url + '/ershoufang/',
 			creeper     = new wubaModel(url,areaObject,storeObject,cookies);
 			//抓取开始

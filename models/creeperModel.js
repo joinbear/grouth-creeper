@@ -1,9 +1,5 @@
 var 
 	superagent = require('superagent'),
-	cheerio    = require('cheerio'),
-	urlUtil    = require('url'),
-	Entities   = require('html-entities').XmlEntities,
-	entities   = new Entities(),
 	xlsx       = require('node-xlsx'),
 	fs         = require('fs-extra');
 /**
@@ -89,7 +85,7 @@ creeper.prototype.countHouseInfo = function(areaArray,areaResult){
 	  areaArray.push(awjwJin);
 
 	  return areaArray;
-}
+};
 /**
  * [outPutData 输出文本到excel中]
  * @param  {[object]}   finalResult [输出结果对象]
@@ -113,7 +109,7 @@ creeper.prototype.outPutData = function(areaName,finalResult,callback){
 	  // var data = [[1,2,3],[true, false, null, 'sheetjs'],['foo','bar',new Date('2014-02-19T14:30Z'), '0.3'], ['baz', null, 'qux']];
 	  var buffer = xlsx.build([{name: "houseCount", data: finalResult}]); // returns a buffer
 	  fs.writeFileSync(dirpath + hours + '.xlsx',buffer,'binary');
-	}
+	};
   fs.exists( dirpath , function (exists){	
   	if(!exists){
   		fs.mkdirs(dirpath, function (err) {
@@ -126,5 +122,5 @@ creeper.prototype.outPutData = function(areaName,finalResult,callback){
   });
   console.log('======抓取结束======');
   
-}
+};
 module.exports = creeper;

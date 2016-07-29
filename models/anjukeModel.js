@@ -1,13 +1,10 @@
-var 
-	superagent = require('superagent'),
+var
 	cheerio    = require('cheerio'),
-	urlUtil    = require('url'),
 	Entities   = require('html-entities').XmlEntities,
 	entities   = new Entities(),
 	xlsx       = require('node-xlsx'),
 	async      = require('async'),
-	creeper    = require('./creeperModel'),
-	fs         = require('fs-extra');
+	creeper    = require('./creeperModel');
 /**
  * [getAnjukeAreaUrls   解析页面获取anjuke同城的二手房大区url地址]
  * @param  {[type]}   website  [待解析的网页]
@@ -37,7 +34,6 @@ creeper.prototype.getAnjukeAreaUrls = function(website,callback){
       areaUrls.push(areaUrl);
       that.areaObject[areaName] = areaTxt;
     }
-
   });
 	callback(null,areaUrls);
 };
@@ -77,7 +73,7 @@ creeper.prototype.getAnjukeHouseInfo = function(storeUrl,website,callback){
 		storeName  = storeUrl.replace(this.creeperUrl,'').replace('/sale/','').replace('/',''),
 		areaArray  = [],
 		areaResult = [],
-		houseNum   = $('#house-list').find('li').length;
+		houseNum   = $('#houselist-mod').find('li').length;
 		areaDom    = $('#content .p_crumbs a'),
 		areaName   = areaDom.eq(areaDom.length - 2).attr('href');
 		if(areaName){
@@ -89,7 +85,7 @@ creeper.prototype.getAnjukeHouseInfo = function(storeUrl,website,callback){
   //输出抓取网页内容
   //this.writePage(storeName,website);
 
-  $('#house-list').find('li').each(function (idx, element) {
+  $('#houselist-mod').find('li').each(function (idx, element) {
     var 
 			$element  = $(element),
 			resultObj = {},

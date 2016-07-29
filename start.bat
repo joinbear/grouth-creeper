@@ -1,3 +1,3 @@
-cd /d d://webshop/creeper
+cd /d d://creeper
 
 node app.js

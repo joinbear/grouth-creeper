@@ -1,6 +1,6 @@
 
 var 
-  creeperCtr  = require('./controller'),
+  creeperCtr  = require('./controller/controller'),
   creeper     = new creeperCtr(),
   schedule    = require('node-schedule'),
   rule        = new schedule.RecurrenceRule();
